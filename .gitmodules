@@ -1,0 +1,3 @@
+[submodule "proxy-common"]
+	path = go-cache/proxy-common
+	url = https://github.com/status-im/proxy-common.git

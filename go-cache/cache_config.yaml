@@ -1,0 +1,34 @@
+# NFT Proxy Configuration
+
+# Alchemy API settings
+alchemy:
+  # API key loaded from ALCHEMY_API_KEY environment variable
+  api_key: "${ALCHEMY_API_KEY}"
+  
+  # Base URLs for different Alchemy endpoints (NFT API v3)
+  # Format: chain-network (e.g., eth-mainnet, polygon-mainnet)
+  # Note: NFT API v3 uses format https://{network}.g.alchemy.com/nft/v3/{apiKey}/{endpoint}
+  base_urls:
+    eth-mainnet: "https://eth-mainnet.g.alchemy.com"
+    ethereum-mainnet: "https://eth-mainnet.g.alchemy.com"
+    polygon-mainnet: "https://polygon-mainnet.g.alchemy.com"
+    optimism-mainnet: "https://opt-mainnet.g.alchemy.com"
+    opt-mainnet: "https://opt-mainnet.g.alchemy.com"
+    arbitrum-mainnet: "https://arb-mainnet.g.alchemy.com"
+    arb-mainnet: "https://arb-mainnet.g.alchemy.com"
+    base-mainnet: "https://base-mainnet.g.alchemy.com"
+    eth-sepolia: "https://eth-sepolia.g.alchemy.com"
+    polygon-amoy: "https://polygon-amoy.g.alchemy.com"
+  
+  # Retry configuration for Alchemy API calls
+  retry:
+    max_retries: 3
+    base_backoff: 1s
+    connection_timeout: 30s
+    request_timeout: 60s
+
+# HTTP server configuration
+server:
+  port: "8080"
+  read_timeout: 30s
+  write_timeout: 30s

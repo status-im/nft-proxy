@@ -1,0 +1,115 @@
+services:
+  # Nginx proxy with auth
+  nginx-proxy:
+    build:
+      context: './nginx-proxy'
+    container_name: 'nft-nginx-proxy'
+    restart: 'always'
+    environment:
+      GO_AUTH_SERVICE_URL: 'http://auth-service:8081'
+      AUTH_CONFIG_FILE: '/app/auth_config.json'
+      GO_NFT_PROXY_SOCKET: '/tmp/nft-proxy.sock'
+    ports:
+      - '8080:8080'
+    networks:
+      - 'nft-network'
+    depends_on:
+      - 'nft-proxy'
+      - 'auth-service'
+    volumes:
+      - './secrets/.htpasswd:/etc/nginx/.htpasswd:ro'
+      - './secrets/auth_config.json:/app/auth_config.json:ro'
+      - 'nft_proxy_socket:/tmp'
+    healthcheck:
+      test: ['CMD-SHELL', 'nc -z 0.0.0.0 8080 || exit 1']
+      interval: '30s'
+      timeout: '10s'
+      retries: 3
+      start_period: '10s'
+
+  # NFT proxy Go service
+  nft-proxy:
+    build:
+      context: '.'
+      dockerfile: 'go-cache/Dockerfile'
+    container_name: 'nft-proxy'
+    restart: 'always'
+    environment:
+      ALCHEMY_API_KEY: '${ALCHEMY_API_KEY}'
+      CACHE_CONFIG_FILE: '/app/cache_config.yaml'
+      CACHE_SOCKET_PATH: '/tmp/nft-proxy.sock'
+      METRICS_PORT: '8099'
+    ports:
+      - '8099:8099'
+    networks:
+      - 'nft-network'
+    volumes:
+      - 'nft_proxy_socket:/tmp'
+    healthcheck:
+      test: ['CMD-SHELL', 'test -S /tmp/nft-proxy.sock || exit 1']
+      interval: '30s'
+      timeout: '10s'
+      retries: 3
+      start_period: '10s'
+
+  # Auth service (puzzle + JWT)
+  auth-service:
+    build:
+      context: './go-cache/proxy-common'
+      dockerfile: 'auth/Dockerfile'
+    container_name: 'nft-auth-service'
+    restart: 'always'
+    environment:
+      CONFIG_FILE: '/app/config.json'
+      PORT: '8081'
+    networks:
+      - 'nft-network'
+    volumes:
+      - './secrets/auth_config.json:/app/config.json:ro'
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -q -O - http://0.0.0.0:8081/auth/status || exit 1']
+      interval: '30s'
+      timeout: '10s'
+      retries: 3
+      start_period: '10s'
+
+  prometheus:
+    image: 'prom/prometheus:latest'
+    container_name: 'nft-prometheus'
+    restart: 'always'
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - '9090:9090'
+    networks:
+      - 'nft-network'
+    volumes:
+      - './prometheus.yml:/etc/prometheus/prometheus.yml'
+    depends_on:
+      - 'nft-proxy'
+      - 'auth-service'
+
+  grafana:
+    image: 'grafana/grafana:latest'
+    container_name: 'nft-grafana'
+    restart: 'always'
+    ports:
+      - '3000:3000'
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: 'admin'
+    networks:
+      - 'nft-network'
+    volumes:
+      - 'grafana-storage:/var/lib/grafana'
+      - './grafana/provisioning/datasources:/etc/grafana/provisioning/datasources'
+      - './grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards'
+    depends_on:
+      - 'prometheus'
+
+volumes:
+  grafana-storage:
+  nft_proxy_socket:
+
+networks:
+  nft-network:
+    driver: bridge

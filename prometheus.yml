@@ -1,0 +1,15 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'nginx-proxy'
+    static_configs:
+      - targets: ['nginx-proxy:8080']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+
+  - job_name: 'auth-service'
+    static_configs:
+      - targets: ['auth-service:8081']
+    scrape_interval: 5s
+    metrics_path: '/metrics'
