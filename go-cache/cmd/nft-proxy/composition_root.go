@@ -82,19 +82,30 @@ func (r *CompositionRoot) loadConfig() error {
 	return nil
 }
 
-// loadAPIKeys loads API keys from JSON file
+// loadAPIKeys loads API keys from JSON file or environment variable
 func (r *CompositionRoot) loadAPIKeys() error {
 	keysPath := os.Getenv("API_KEYS_FILE")
 	if keysPath == "" {
 		keysPath = "/app/secrets/alchemy_api_keys.json"
 	}
 
-	apiKeys, err := config.LoadAPIKeys(keysPath, r.Logger)
-	if err != nil {
-		return err
+	// Try loading from file first
+	if _, err := os.Stat(keysPath); err == nil {
+		apiKeys, err := config.LoadAPIKeys(keysPath, r.Logger)
+		if err != nil {
+			return err
+		}
+		r.APIKeys = apiKeys
+		return nil
 	}
 
-	r.APIKeys = apiKeys
+	// Fallback to ALCHEMY_API_KEY env var
+	apiKey := os.Getenv("ALCHEMY_API_KEY")
+	if apiKey == "" {
+		return fmt.Errorf("no API keys: file %s not found and ALCHEMY_API_KEY not set", keysPath)
+	}
+	r.Logger.Info("Using ALCHEMY_API_KEY from environment")
+	r.APIKeys = []string{apiKey}
 	return nil
 }
 

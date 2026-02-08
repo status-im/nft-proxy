@@ -9,8 +9,6 @@ services:
       GO_AUTH_SERVICE_URL: 'http://auth-service:8081'
       AUTH_CONFIG_FILE: '/app/auth_config.json'
       GO_NFT_PROXY_SOCKET: '/tmp/nft-proxy.sock'
-    ports:
-      - '8080:8080'
     networks:
       - 'nft-network'
     depends_on:
@@ -39,8 +37,6 @@ services:
       CACHE_CONFIG_FILE: '/app/cache_config.yaml'
       CACHE_SOCKET_PATH: '/tmp/nft-proxy.sock'
       METRICS_PORT: '8099'
-    ports:
-      - '8099:8099'
     networks:
       - 'nft-network'
     volumes:
@@ -79,8 +75,6 @@ services:
     restart: 'always'
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
-    ports:
-      - '9090:9090'
     networks:
       - 'nft-network'
     volumes:
@@ -93,8 +87,6 @@ services:
     image: 'grafana/grafana:latest'
     container_name: 'nft-grafana'
     restart: 'always'
-    ports:
-      - '3000:3000'
     environment:
       GF_SECURITY_ADMIN_PASSWORD: 'admin'
     networks:
