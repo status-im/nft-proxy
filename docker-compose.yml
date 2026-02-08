@@ -9,6 +9,7 @@ services:
       GO_AUTH_SERVICE_URL: 'http://auth-service:8081'
       AUTH_CONFIG_FILE: '/app/auth_config.json'
       GO_NFT_PROXY_SOCKET: '/tmp/nft-proxy.sock'
+      CUSTOM_DNS: '127.0.0.11'
     networks:
       - 'nft-network'
     depends_on:

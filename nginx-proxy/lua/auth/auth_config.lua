@@ -1,5 +1,6 @@
 local _M = {}
 local cjson = require "cjson"
+local resolver_utils = require "utils.resolver_utils"
 
 -- Configuration loading function
 function _M.load_config(premature)
@@ -13,10 +14,19 @@ function _M.load_config(premature)
     -- Get Go Auth Service URL from environment variable
     local base_auth_url = os.getenv("GO_AUTH_SERVICE_URL") or "http://auth-service:8081"
     
-    -- Remove trailing slash to fix proxy_pass behavior
-    _M.go_auth_service_url = base_auth_url:gsub("/$", "")
+    -- Try to resolve auth-service URL using custom DNS if available
+    local custom_dns = os.getenv("CUSTOM_DNS") or "127.0.0.11"  -- Docker DNS
+    local resolved_url, err = resolver_utils.resolve_url_with_custom_dns(base_auth_url, custom_dns)
     
-    ngx.log(ngx.NOTICE, "auth_config: Using auth service URL: ", _M.go_auth_service_url)
+    -- Remove trailing slash to fix proxy_pass behavior
+    local final_url = (resolved_url or base_auth_url):gsub("/$", "")
+    _M.go_auth_service_url = final_url
+    
+    if resolved_url then
+        ngx.log(ngx.NOTICE, "auth_config: Successfully resolved auth service URL to: ", final_url)
+    else
+        ngx.log(ngx.WARN, "auth_config: Failed to resolve auth service URL, using fallback: ", final_url, ". Error: ", err or "unknown")
+    end
 
     -- Read and parse JSON config file
     local config_data = _M.read_json_config(config_path)
