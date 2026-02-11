@@ -1,3 +1,4 @@
+---
 services:
   # Nginx proxy with auth
   nginx-proxy:
@@ -10,6 +11,8 @@ services:
       AUTH_CONFIG_FILE: '/app/auth_config.json'
       GO_NFT_PROXY_SOCKET: '/tmp/nft-proxy.sock'
       CUSTOM_DNS: '127.0.0.11'
+    ports:
+      - '8085:8080'
     networks:
       - 'nft-network'
     depends_on:
@@ -70,37 +73,7 @@ services:
       retries: 3
       start_period: '10s'
 
-  prometheus:
-    image: 'prom/prometheus:latest'
-    container_name: 'nft-prometheus'
-    restart: 'always'
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-    networks:
-      - 'nft-network'
-    volumes:
-      - './prometheus.yml:/etc/prometheus/prometheus.yml'
-    depends_on:
-      - 'nft-proxy'
-      - 'auth-service'
-
-  grafana:
-    image: 'grafana/grafana:latest'
-    container_name: 'nft-grafana'
-    restart: 'always'
-    environment:
-      GF_SECURITY_ADMIN_PASSWORD: 'admin'
-    networks:
-      - 'nft-network'
-    volumes:
-      - 'grafana-storage:/var/lib/grafana'
-      - './grafana/provisioning/datasources:/etc/grafana/provisioning/datasources'
-      - './grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards'
-    depends_on:
-      - 'prometheus'
-
 volumes:
-  grafana-storage:
   nft_proxy_socket:
 
 networks:
