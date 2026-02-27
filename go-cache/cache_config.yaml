@@ -11,13 +11,21 @@ alchemy:
   base_urls:
     eth-mainnet: "https://eth-mainnet.g.alchemy.com"
     ethereum-mainnet: "https://eth-mainnet.g.alchemy.com"
+    bsc-mainnet: "https://bnb-mainnet.g.alchemy.com"
+    bsc-testnet: "https://bnb-testnet.g.alchemy.com"
     polygon-mainnet: "https://polygon-mainnet.g.alchemy.com"
     optimism-mainnet: "https://opt-mainnet.g.alchemy.com"
     opt-mainnet: "https://opt-mainnet.g.alchemy.com"
     arbitrum-mainnet: "https://arb-mainnet.g.alchemy.com"
     arb-mainnet: "https://arb-mainnet.g.alchemy.com"
     base-mainnet: "https://base-mainnet.g.alchemy.com"
+    linea-mainnet: "https://linea-mainnet.g.alchemy.com"
     eth-sepolia: "https://eth-sepolia.g.alchemy.com"
+    ethereum-sepolia: "https://eth-sepolia.g.alchemy.com"
+    optimism-sepolia: "https://opt-sepolia.g.alchemy.com"
+    arbitrum-sepolia: "https://arb-sepolia.g.alchemy.com"
+    base-sepolia: "https://base-sepolia.g.alchemy.com"
+    linea-sepolia: "https://linea-sepolia.g.alchemy.com"
     polygon-amoy: "https://polygon-amoy.g.alchemy.com"
   
   # Retry configuration for Alchemy API calls
