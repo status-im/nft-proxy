@@ -26,6 +26,34 @@ alchemy:
     arbitrum-sepolia: "https://arb-sepolia.g.alchemy.com"
     base-sepolia: "https://base-sepolia.g.alchemy.com"
     linea-sepolia: "https://linea-sepolia.g.alchemy.com"
+    # Ethereum testnets
+    eth-hoodi: "https://eth-hoodi.g.alchemy.com"
+    ethereum-hoodi: "https://eth-hoodi.g.alchemy.com"
+    # zkSync
+    zksync-mainnet: "https://zksync-mainnet.g.alchemy.com"
+    zksync-sepolia: "https://zksync-sepolia.g.alchemy.com"
+    # Scroll
+    scroll-mainnet: "https://scroll-mainnet.g.alchemy.com"
+    scroll-sepolia: "https://scroll-sepolia.g.alchemy.com"
+    # Blast
+    blast-mainnet: "https://blast-mainnet.g.alchemy.com"
+    blast-sepolia: "https://blast-sepolia.g.alchemy.com"
+    # Unichain
+    unichain-mainnet: "https://unichain-mainnet.g.alchemy.com"
+    unichain-sepolia: "https://unichain-sepolia.g.alchemy.com"
+    # Katana
+    katana-mainnet: "https://katana-mainnet.g.alchemy.com"
+    katana-bokuto: "https://katana-bokuto.g.alchemy.com"
+    # Ink
+    ink-mainnet: "https://ink-mainnet.g.alchemy.com"
+    ink-sepolia: "https://ink-sepolia.g.alchemy.com"
+    # Abstract (testnet chain 11124 is abstract-testnet in Alchemy)
+    abstract-mainnet: "https://abstract-mainnet.g.alchemy.com"
+    abstract-testnet: "https://abstract-testnet.g.alchemy.com"
+    abstract-sepolia: "https://abstract-testnet.g.alchemy.com"
+    # Soneium
+    soneium-mainnet: "https://soneium-mainnet.g.alchemy.com"
+    soneium-minato: "https://soneium-minato.g.alchemy.com"
     polygon-amoy: "https://polygon-amoy.g.alchemy.com"
   
   # Retry configuration for Alchemy API calls
