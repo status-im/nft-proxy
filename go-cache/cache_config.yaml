@@ -9,54 +9,35 @@ alchemy:
   # Format: chain-network (e.g., eth-mainnet, polygon-mainnet)
   # Note: NFT API v3 uses format https://{network}.g.alchemy.com/nft/v3/{apiKey}/{endpoint}
   base_urls:
-    eth-mainnet: "https://eth-mainnet.g.alchemy.com"
-    ethereum-mainnet: "https://eth-mainnet.g.alchemy.com"
-    bsc-mainnet: "https://bnb-mainnet.g.alchemy.com"
-    bsc-testnet: "https://bnb-testnet.g.alchemy.com"
-    polygon-mainnet: "https://polygon-mainnet.g.alchemy.com"
-    optimism-mainnet: "https://opt-mainnet.g.alchemy.com"
-    opt-mainnet: "https://opt-mainnet.g.alchemy.com"
-    arbitrum-mainnet: "https://arb-mainnet.g.alchemy.com"
-    arb-mainnet: "https://arb-mainnet.g.alchemy.com"
-    base-mainnet: "https://base-mainnet.g.alchemy.com"
-    linea-mainnet: "https://linea-mainnet.g.alchemy.com"
-    eth-sepolia: "https://eth-sepolia.g.alchemy.com"
-    ethereum-sepolia: "https://eth-sepolia.g.alchemy.com"
-    optimism-sepolia: "https://opt-sepolia.g.alchemy.com"
-    arbitrum-sepolia: "https://arb-sepolia.g.alchemy.com"
-    base-sepolia: "https://base-sepolia.g.alchemy.com"
-    linea-sepolia: "https://linea-sepolia.g.alchemy.com"
-    # Ethereum testnets
-    eth-hoodi: "https://eth-hoodi.g.alchemy.com"
-    ethereum-hoodi: "https://eth-hoodi.g.alchemy.com"
-    # zkSync
-    zksync-mainnet: "https://zksync-mainnet.g.alchemy.com"
-    zksync-sepolia: "https://zksync-sepolia.g.alchemy.com"
-    # Scroll
-    scroll-mainnet: "https://scroll-mainnet.g.alchemy.com"
-    scroll-sepolia: "https://scroll-sepolia.g.alchemy.com"
-    # Blast
-    blast-mainnet: "https://blast-mainnet.g.alchemy.com"
-    blast-sepolia: "https://blast-sepolia.g.alchemy.com"
-    # Unichain
-    unichain-mainnet: "https://unichain-mainnet.g.alchemy.com"
-    unichain-sepolia: "https://unichain-sepolia.g.alchemy.com"
-    # Katana
-    katana-mainnet: "https://katana-mainnet.g.alchemy.com"
-    katana-bokuto: "https://katana-bokuto.g.alchemy.com"
-    # Ink
-    ink-mainnet: "https://ink-mainnet.g.alchemy.com"
-    ink-sepolia: "https://ink-sepolia.g.alchemy.com"
-    # Abstract (testnet chain 11124 is abstract-testnet in Alchemy)
     abstract-mainnet: "https://abstract-mainnet.g.alchemy.com"
     abstract-testnet: "https://abstract-testnet.g.alchemy.com"
-    abstract-sepolia: "https://abstract-testnet.g.alchemy.com"
-    # Soneium
+    arbitrum-mainnet: "https://arb-mainnet.g.alchemy.com"
+    arbitrum-sepolia: "https://arb-sepolia.g.alchemy.com"
+    base-mainnet: "https://base-mainnet.g.alchemy.com"
+    base-sepolia: "https://base-sepolia.g.alchemy.com"
+    blast-mainnet: "https://blast-mainnet.g.alchemy.com"
+    blast-sepolia: "https://blast-sepolia.g.alchemy.com"
+    bsc-mainnet: "https://bnb-mainnet.g.alchemy.com"
+    bsc-testnet: "https://bnb-testnet.g.alchemy.com"
+    ethereum-hoodi: "https://eth-hoodi.g.alchemy.com"
+    ethereum-mainnet: "https://eth-mainnet.g.alchemy.com"
+    ethereum-sepolia: "https://eth-sepolia.g.alchemy.com"
+    ink-mainnet: "https://ink-mainnet.g.alchemy.com"
+    ink-sepolia: "https://ink-sepolia.g.alchemy.com"
+    katana-bokuto: "https://katana-bokuto.g.alchemy.com"
+    katana-mainnet: "https://katana-mainnet.g.alchemy.com"
+    linea-mainnet: "https://linea-mainnet.g.alchemy.com"
+    linea-sepolia: "https://linea-sepolia.g.alchemy.com"
+    optimism-mainnet: "https://opt-mainnet.g.alchemy.com"
+    optimism-sepolia: "https://opt-sepolia.g.alchemy.com"
+    scroll-mainnet: "https://scroll-mainnet.g.alchemy.com"
+    scroll-sepolia: "https://scroll-sepolia.g.alchemy.com"
     soneium-mainnet: "https://soneium-mainnet.g.alchemy.com"
     soneium-minato: "https://soneium-minato.g.alchemy.com"
-    polygon-amoy: "https://polygon-amoy.g.alchemy.com"
-  
-  # Retry configuration for Alchemy API calls
+    unichain-mainnet: "https://unichain-mainnet.g.alchemy.com"
+    unichain-sepolia: "https://unichain-sepolia.g.alchemy.com"
+    zksync-mainnet: "https://zksync-mainnet.g.alchemy.com"
+    zksync-sepolia: "https://zksync-sepolia.g.alchemy.com"
   retry:
     max_retries: 3
     base_backoff: 1s
