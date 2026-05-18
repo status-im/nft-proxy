@@ -62,6 +62,8 @@ services:
     environment:
       CONFIG_FILE: '/app/config.json'
       PORT: '8081'
+    ports:
+      - '8086:8081'
     networks:
       - 'nft-network'
     volumes:
