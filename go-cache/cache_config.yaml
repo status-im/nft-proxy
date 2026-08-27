@@ -30,6 +30,8 @@ alchemy:
     linea-sepolia: "https://linea-sepolia.g.alchemy.com"
     optimism-mainnet: "https://opt-mainnet.g.alchemy.com"
     optimism-sepolia: "https://opt-sepolia.g.alchemy.com"
+    robinhood-mainnet: "https://robinhood-mainnet.g.alchemy.com"
+    robinhood-testnet: "https://robinhood-testnet.g.alchemy.com"
     scroll-mainnet: "https://scroll-mainnet.g.alchemy.com"
     scroll-sepolia: "https://scroll-sepolia.g.alchemy.com"
     soneium-mainnet: "https://soneium-mainnet.g.alchemy.com"
