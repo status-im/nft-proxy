@@ -288,11 +288,17 @@ docker-compose exec nginx-proxy openresty -t
 docker-compose up --build nginx-proxy
 ```
 
-**Update Lua scripts:**
+**Puzzle auth Lua:**
+
+The Lua that checks JWT tokens is the module shared with eth-rpc-proxy and
+market-proxy,
+[proxy-common/auth/nginx](https://github.com/status-im/proxy-common/tree/master/auth/nginx).
+The nginx image copies it from the `go-cache/proxy-common` submodule
+(`git submodule update --init`), so it is built from the repository root:
 ```bash
-# Edit nginx-proxy/lua/**/*.lua
-docker-compose restart nginx-proxy
+docker build -f nginx-proxy/Dockerfile .
 ```
+To change the Lua, change it in proxy-common and move the submodule.
 
 **Update auth config:**
 ```bash
