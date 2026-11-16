@@ -3,6 +3,7 @@ package alchemy
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -12,6 +13,10 @@ import (
 
 	"github.com/status-im/proxy-common/httpclient"
 )
+
+// ErrUnsupportedChain is returned for a chain and network with no Alchemy
+// base URL in the configuration.
+var ErrUnsupportedChain = errors.New("unsupported chain")
 
 // Client represents an Alchemy NFT API client
 type Client struct {
@@ -35,7 +40,7 @@ func (c *Client) getBaseURL(chain, network string) (string, error) {
 	chainKey := strings.ToLower(chain) + "-" + strings.ToLower(network)
 	baseURL, ok := c.baseURLs[chainKey]
 	if !ok {
-		return "", fmt.Errorf("unsupported chain: %s-%s", chain, network)
+		return "", fmt.Errorf("%w: %s-%s", ErrUnsupportedChain, chain, network)
 	}
 	return baseURL, nil
 }
