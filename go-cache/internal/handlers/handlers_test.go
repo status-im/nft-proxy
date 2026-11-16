@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/status-im/proxy-common/httpclient"
@@ -244,8 +246,8 @@ func TestHandleProxy_UnsupportedChain(t *testing.T) {
 
 	server.handleProxy(w, req)
 
-	if w.Code != http.StatusBadGateway {
-		t.Errorf("Expected status 502, got %d", w.Code)
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected status 404, got %d", w.Code)
 	}
 
 	var response map[string]string
@@ -253,8 +255,58 @@ func TestHandleProxy_UnsupportedChain(t *testing.T) {
 		t.Fatalf("Failed to decode response: %v", err)
 	}
 
-	if response["error"] != "Failed to proxy request" {
-		t.Errorf("Expected error message 'Failed to proxy request', got %q", response["error"])
+	if response["error"] != "unsupported chain: unsupported-mainnet" {
+		t.Errorf("Expected error message 'unsupported chain: unsupported-mainnet', got %q", response["error"])
+	}
+}
+
+// What Alchemy answers decides what the caller gets: its refusals are passed
+// on, its failures and the proxy's own credentials trouble are a 502.
+func TestHandleProxy_AlchemyErrors(t *testing.T) {
+	tests := []struct {
+		name        string
+		alchemyCode int
+		alchemyBody string
+		wantCode    int
+		wantBody    string
+	}{
+		{"BadRequestPassedOn", http.StatusBadRequest, `{"error":{"message":"owner is required"}}`, http.StatusBadRequest, `{"error":{"message":"owner is required"}}`},
+		{"NotFoundWithoutBody", http.StatusNotFound, "", http.StatusNotFound, `{"error":"Not Found"}`},
+		{"ServerErrorIsBadGateway", http.StatusInternalServerError, `{"error":"boom"}`, http.StatusBadGateway, `{"error":"Failed to proxy request"}`},
+		{"BadKeyIsBadGateway", http.StatusUnauthorized, `{"error":"Must be authenticated!"}`, http.StatusBadGateway, `{"error":"Failed to proxy request"}`},
+		{"RateLimitIsBadGateway", http.StatusTooManyRequests, `{"error":"slow down"}`, http.StatusBadGateway, `{"error":"Failed to proxy request"}`},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockAlchemy := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(tt.alchemyCode)
+				w.Write([]byte(tt.alchemyBody))
+			}))
+			defer mockAlchemy.Close()
+
+			opts := httpclient.DefaultRetryOptions()
+			opts.MaxRetries = 2
+			opts.BaseBackoff = time.Millisecond
+			client := alchemy.NewClient("test-api-key", map[string]string{"eth-mainnet": mockAlchemy.URL}, opts)
+			server := NewServer(client, zap.NewNop())
+
+			req := httptest.NewRequest(http.MethodGet, "/eth/mainnet/nft/v3/getNFTsForOwner", nil)
+			req = mux.SetURLVars(req, map[string]string{"chain": "eth", "network": "mainnet"})
+			w := httptest.NewRecorder()
+
+			server.handleProxy(w, req)
+
+			if w.Code != tt.wantCode {
+				t.Errorf("Expected status %d, got %d", tt.wantCode, w.Code)
+			}
+			if got := strings.TrimSpace(w.Body.String()); got != tt.wantBody {
+				t.Errorf("Expected body %s, got %s", tt.wantBody, got)
+			}
+			if got := w.Header().Get("Content-Type"); got != "application/json" {
+				t.Errorf("Expected a JSON answer, got Content-Type %q", got)
+			}
+		})
 	}
 }
 
@@ -302,7 +354,9 @@ func TestSetupRoutes(t *testing.T) {
 	w = httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
-	if w.Code == http.StatusNotFound {
-		t.Error("NFT proxy route not registered")
+	// No chains are configured, so the handler answers 404 itself: its own
+	// message tells that apart from a route the router does not know
+	if !strings.Contains(w.Body.String(), "unsupported chain") {
+		t.Errorf("NFT proxy route not registered: %d %q", w.Code, w.Body.String())
 	}
 }

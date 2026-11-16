@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net"
 	"net/http"
@@ -11,6 +12,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"
+
+	"github.com/status-im/proxy-common/httpclient"
 
 	"nft-proxy/internal/alchemy"
 )
@@ -80,14 +83,43 @@ func (s *Server) handleProxy(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		s.logger.Error("Alchemy API error", zap.Error(err))
-		s.writeError(w, "Failed to proxy request", http.StatusBadGateway)
+		s.writeProxyError(w, err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	w.Write(respBody)
+}
+
+// writeProxyError answers for a request Alchemy did not serve. What the caller
+// got wrong goes back as it is: a chain the proxy has no URL for is a 404, and
+// a 4xx from Alchemy is passed on with Alchemy's own body. Everything else is
+// a failure behind the proxy and a 502.
+func (s *Server) writeProxyError(w http.ResponseWriter, err error) {
+	if errors.Is(err, alchemy.ErrUnsupportedChain) {
+		s.logger.Info("Request for an unsupported chain", zap.Error(err))
+		s.writeError(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	var statusErr *httpclient.StatusError
+	if errors.As(err, &statusErr) && statusErr.StatusCode >= 400 && statusErr.StatusCode < 500 &&
+		statusErr.StatusCode != http.StatusUnauthorized && statusErr.StatusCode != http.StatusForbidden &&
+		statusErr.StatusCode != http.StatusTooManyRequests {
+		s.logger.Info("Alchemy refused the request", zap.Int("status", statusErr.StatusCode))
+		if len(statusErr.Body) == 0 {
+			s.writeError(w, http.StatusText(statusErr.StatusCode), statusErr.StatusCode)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(statusErr.StatusCode)
+		w.Write(statusErr.Body)
+		return
+	}
+
+	s.logger.Error("Alchemy API error", zap.Error(err))
+	s.writeError(w, "Failed to proxy request", http.StatusBadGateway)
 }
 
 func (s *Server) writeError(w http.ResponseWriter, message string, status int) {
