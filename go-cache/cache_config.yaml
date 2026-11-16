@@ -8,6 +8,9 @@ alchemy:
   # Base URLs for different Alchemy endpoints (NFT API v3)
   # Format: chain-network (e.g., eth-mainnet, polygon-mainnet)
   # Note: NFT API v3 uses format https://{network}.g.alchemy.com/nft/v3/{apiKey}/{endpoint}
+  # Only networks the NFT API serves. bsc-testnet, ethereum-hoodi, ink and
+  # katana are left out: Alchemy answers "This endpoint isn't enabled for that
+  # chain or network" for them.
   base_urls:
     abstract-mainnet: "https://abstract-mainnet.g.alchemy.com"
     abstract-testnet: "https://abstract-testnet.g.alchemy.com"
@@ -15,17 +18,9 @@ alchemy:
     arbitrum-sepolia: "https://arb-sepolia.g.alchemy.com"
     base-mainnet: "https://base-mainnet.g.alchemy.com"
     base-sepolia: "https://base-sepolia.g.alchemy.com"
-    blast-mainnet: "https://blast-mainnet.g.alchemy.com"
-    blast-sepolia: "https://blast-sepolia.g.alchemy.com"
     bsc-mainnet: "https://bnb-mainnet.g.alchemy.com"
-    bsc-testnet: "https://bnb-testnet.g.alchemy.com"
-    ethereum-hoodi: "https://eth-hoodi.g.alchemy.com"
     ethereum-mainnet: "https://eth-mainnet.g.alchemy.com"
     ethereum-sepolia: "https://eth-sepolia.g.alchemy.com"
-    ink-mainnet: "https://ink-mainnet.g.alchemy.com"
-    ink-sepolia: "https://ink-sepolia.g.alchemy.com"
-    katana-bokuto: "https://katana-bokuto.g.alchemy.com"
-    katana-mainnet: "https://katana-mainnet.g.alchemy.com"
     linea-mainnet: "https://linea-mainnet.g.alchemy.com"
     linea-sepolia: "https://linea-sepolia.g.alchemy.com"
     optimism-mainnet: "https://opt-mainnet.g.alchemy.com"
@@ -33,7 +28,6 @@ alchemy:
     robinhood-mainnet: "https://robinhood-mainnet.g.alchemy.com"
     robinhood-testnet: "https://robinhood-testnet.g.alchemy.com"
     scroll-mainnet: "https://scroll-mainnet.g.alchemy.com"
-    scroll-sepolia: "https://scroll-sepolia.g.alchemy.com"
     soneium-mainnet: "https://soneium-mainnet.g.alchemy.com"
     soneium-minato: "https://soneium-minato.g.alchemy.com"
     unichain-mainnet: "https://unichain-mainnet.g.alchemy.com"
